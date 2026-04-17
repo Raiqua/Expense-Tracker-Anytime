@@ -1,0 +1,786 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--surface3:#22223a;
+  --accent:#7c6dfa;--accent2:#fa6d9c;--accent3:#6dfabc;
+  --text:#f0eeff;--text2:#9990cc;--text3:#5a5480;
+  --danger:#fa4d6d;--warn:#fabc6d;--success:#6dfabc;
+  --radius:14px;--radius-sm:8px;
+  font-family:'Space Grotesk',sans-serif;
+}
+body{background:var(--bg);color:var(--text);min-height:600px;overflow-x:hidden}
+.app{display:flex;flex-direction:column;min-height:600px}
+.topbar{background:var(--surface);border-bottom:1px solid #ffffff0f;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:17px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.user-chip{background:var(--surface2);border:1px solid #ffffff10;border-radius:50px;padding:6px 14px;font-size:13px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+.user-chip:hover{border-color:var(--accent);color:var(--text)}
+.user-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3)}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid #ffffff0f;padding:0 20px}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+.tab.active{color:var(--accent);border-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text2)}
+.page{display:none;padding:20px;flex:1}
+.page.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.card{background:var(--surface);border:1px solid #ffffff0a;border-radius:var(--radius);padding:16px}
+.card-sm{background:var(--surface2);border-radius:var(--radius-sm);padding:12px}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-val.green{color:var(--accent3)}
+.stat-val.purple{color:var(--accent)}
+.stat-val.pink{color:var(--accent2)}
+label{font-size:12px;color:var(--text3);display:block;margin-bottom:5px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+input,select{width:100%;background:var(--surface2);border:1px solid #ffffff12;border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:.2s}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c6dfa20}
+select option{background:var(--surface2)}
+.btn{padding:10px 18px;border-radius:var(--radius-sm);border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#9078fa}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid #ffffff10}
+.btn-ghost:hover{color:var(--text);border-color:#ffffff25}
+.btn-danger{background:#fa4d6d20;color:var(--danger);border:1px solid #fa4d6d30}
+.btn-danger:hover{background:#fa4d6d35}
+.btn-sm{padding:6px 12px;font-size:12px}
+.sec-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sec-title::before{content:'';display:block;width:3px;height:13px;background:var(--accent);border-radius:2px}
+.expense-item{background:var(--surface2);border-radius:var(--radius-sm);padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;border:1px solid #ffffff06;transition:.2s}
+.expense-item:hover{border-color:#ffffff15}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.exp-info{flex:1;min-width:0}
+.exp-cat{font-size:13px;font-weight:500}
+.exp-date{font-size:11px;color:var(--text3);margin-top:1px}
+.exp-amt{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--warn);white-space:nowrap}
+.exp-actions{display:flex;gap:4px}
+.icon-btn{width:28px;height:28px;border-radius:6px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.15s}
+.icon-btn:hover{background:var(--surface3)}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:50px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.personality-box{background:var(--surface2);border-radius:var(--radius);padding:16px;margin-top:14px;border-left:3px solid var(--accent)}
+.personality-emoji{font-size:28px;margin-bottom:6px}
+.personality-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.personality-sub{font-size:13px;color:var(--text2)}
+.chart-wrap{position:relative;height:200px;margin-top:10px}
+.calc-display{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;font-family:'JetBrains Mono',monospace;margin-bottom:12px;min-height:70px}
+.calc-expr{font-size:13px;color:var(--text3);word-break:break-all;min-height:18px}
+.calc-result{font-size:24px;font-weight:700;margin-top:4px;color:var(--text)}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.calc-btn{background:var(--surface2);border:1px solid #ffffff0a;border-radius:var(--radius-sm);padding:14px;font-size:16px;font-weight:500;cursor:pointer;color:var(--text);font-family:'JetBrains Mono',monospace;transition:.15s}
+.calc-btn:hover{background:var(--surface3)}
+.calc-btn:active{transform:scale(.95)}
+.calc-btn.op{color:var(--accent)}
+.calc-btn.eq{background:var(--accent);color:#fff;grid-column:span 2}
+.calc-btn.eq:hover{background:#9078fa}
+.calc-btn.clr{color:var(--danger)}
+.conv-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.conv-mid{padding-bottom:10px;color:var(--text3);font-size:18px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.modal-overlay{position:absolute;inset:0;background:#00000088;display:flex;align-items:center;justify-content:center;z-index:100;display:none}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid #ffffff15;border-radius:var(--radius);padding:22px;width:90%;max-width:380px}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:16px}
+.field{margin-bottom:14px}
+.ai-output{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.7;color:var(--text2);margin-top:12px;border-left:3px solid var(--accent2)}
+.loading-dots::after{content:'...';animation:dots 1.2s steps(4,end) infinite}
+@keyframes dots{0%,20%{content:''}40%{content:'.'}60%{content:'..'}80%,100%{content:'...'}}
+.progress-bar{height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:3px;transition:.4s}
+.cat-color-preview{width:18px;height:18px;border-radius:50%;display:inline-block;vertical-align:middle;margin-right:6px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.scrollable{max-height:260px;overflow-y:auto;padding-right:4px}
+.scrollable::-webkit-scrollbar{width:4px}
+.scrollable::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px}
+.divider{height:1px;background:#ffffff08;margin:14px 0}
+.currency-badge{background:var(--surface3);border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;color:var(--accent3);font-family:'JetBrains Mono',monospace}
+</style>
+
+<div class="app" id="app" style="position:relative">
+
+<div class="topbar">
+  <div class="logo"><div class="logo-icon"><img src="ETA logo.png" alt="ETA logo" width="40" height="40"></div>ETA — Expense Tracker</div>
+  <div class="user-chip" id="userChip" onclick="openLogin()">
+    <div class="user-dot" id="userDot" style="background:#5a5480"></div>
+    <span id="userName">Sign In</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+  <div class="tab" onclick="showTab('expenses')">Expenses</div>
+  <div class="tab" onclick="showTab('calculator')">Calculator</div>
+  <div class="tab" onclick="showTab('converter')">Currency</div>
+  <div class="tab" onclick="showTab('settings')">Categories</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="grid3" style="margin-bottom:14px">
+    <div class="card-sm">
+      <div class="stat-label">This Month</div>
+      <div class="stat-val purple" id="dash-total">₹0</div>
+    </div>
+    <div class="card-sm">
+      <div class="stat-label">AI Prediction</div>
+      <div class="stat-val pink" id="dash-predict">₹0</div>
+    </div>
+    <div class="card-sm">
+      <div class="stat-label">Entries</div>
+      <div class="stat-val green" id="dash-count">0</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="sec-title">Add Expense</div>
+    <div class="grid2" style="gap:10px;margin-bottom:10px">
+      <div class="field"><label>Amount</label><input type="number" id="addAmount" placeholder="0.00" min="0"></div>
+      <div class="field"><label>Category</label>
+        <select id="addCategory" style="background:var(--surface2)"></select>
+      </div>
+    </div>
+    <div class="grid2" style="gap:10px;margin-bottom:12px">
+      <div class="field"><label>Date</label><input type="date" id="addDate"></div>
+      <div class="field"><label>Note (optional)</label><input type="text" id="addNote" placeholder="Quick note..."></div>
+    </div>
+    <button class="btn btn-primary" onclick="addExpense()" style="width:100%">+ Add Expense</button>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <div class="sec-title">Spending by Category</div>
+    <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+  </div>
+
+  <div class="personality-box" id="personalityBox">
+    <div class="personality-emoji" id="pEmoji">🤔</div>
+    <div class="personality-title" id="pTitle">No data yet</div>
+    <div class="personality-sub" id="pSub">Add expenses to reveal your money personality</div>
+    <div class="badge-row" id="pBadges"></div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="sec-title">AI Monthly Insight</div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:8px" onclick="getAIInsight()">✨ Analyze my spending (AI)</button>
+    <div class="ai-output" id="aiOutput" style="display:none"></div>
+  </div>
+</div>
+
+<!-- EXPENSES -->
+<div class="page" id="page-expenses">
+  <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center">
+    <input type="text" id="searchInput" placeholder="Search expenses..." style="flex:1" oninput="renderExpenses()">
+    <select id="filterCat" onchange="renderExpenses()" style="width:140px">
+      <option value="">All categories</option>
+    </select>
+  </div>
+  <div id="expenseList"></div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="page" id="page-calculator">
+  <div class="card">
+    <div class="calc-display">
+      <div class="calc-expr" id="calcExpr"></div>
+      <div class="calc-result" id="calcDisplay">0</div>
+    </div>
+    <div class="calc-grid" id="calcGrid"></div>
+    <div style="margin-top:12px">
+      <div class="sec-title">Add result as expense</div>
+      <div style="display:flex;gap:8px">
+        <select id="calcCatAdd" style="flex:1;background:var(--surface2)"></select>
+        <button class="btn btn-primary btn-sm" onclick="addCalcAsExpense()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CURRENCY CONVERTER -->
+<div class="page" id="page-converter">
+  <div class="card">
+    <div class="sec-title">Currency Converter</div>
+    <div class="conv-row" style="margin-bottom:16px">
+      <div>
+        <label>From</label>
+        <select id="fromCurr" onchange="convert()">
+          <option value="INR">🇮🇳 INR — Indian Rupee</option>
+          <option value="USD">🇺🇸 USD — US Dollar</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+          <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+          <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+          <option value="AED">🇦🇪 AED — UAE Dirham</option>
+          <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+          <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+          <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
+          <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
+          <option value="KRW">🇰🇷 KRW — South Korean Won</option>
+          <option value="THB">🇹🇭 THB — Thai Baht</option>
+          <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
+          <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
+          <option value="PHP">🇵🇭 PHP — Philippine Peso</option>
+          <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
+          <option value="QAR">🇶🇦 QAR — Qatari Riyal</option>
+          <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
+          <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
+          <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
+          <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
+          <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
+          <option value="DKK">🇩🇰 DKK — Danish Krone</option>
+          <option value="PLN">🇵🇱 PLN — Polish Zloty</option>
+          <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
+          <option value="TWD">🇹🇼 TWD — Taiwan Dollar</option>
+          <option value="CZK">🇨🇿 CZK — Czech Koruna</option>
+          <option value="HUF">🇭🇺 HUF — Hungarian Forint</option>
+          <option value="PKR">🇵🇰 PKR — Pakistani Rupee</option>
+          <option value="BDT">🇧🇩 BDT — Bangladeshi Taka</option>
+          <option value="LKR">🇱🇰 LKR — Sri Lankan Rupee</option>
+          <option value="NPR">🇳🇵 NPR — Nepalese Rupee</option>
+          <option value="MMK">🇲🇲 MMK — Myanmar Kyat</option>
+          <option value="VND">🇻🇳 VND — Vietnamese Dong</option>
+          <option value="NGN">🇳🇬 NGN — Nigerian Naira</option>
+          <option value="KES">🇰🇪 KES — Kenyan Shilling</option>
+          <option value="EGP">🇪🇬 EGP — Egyptian Pound</option>
+          <option value="ILS">🇮🇱 ILS — Israeli Shekel</option>
+          <option value="KWD">🇰🇼 KWD — Kuwaiti Dinar</option>
+          <option value="BHD">🇧🇭 BHD — Bahraini Dinar</option>
+          <option value="OMR">🇴🇲 OMR — Omani Rial</option>
+          <option value="JOD">🇯🇴 JOD — Jordanian Dinar</option>
+          <option value="LBP">🇱🇧 LBP — Lebanese Pound</option>
+          <option value="MAD">🇲🇦 MAD — Moroccan Dirham</option>
+          <option value="DZD">🇩🇿 DZD — Algerian Dinar</option>
+          <option value="TND">🇹🇳 TND — Tunisian Dinar</option>
+          <option value="GHS">🇬🇭 GHS — Ghanaian Cedi</option>
+          <option value="TZS">🇹🇿 TZS — Tanzanian Shilling</option>
+          <option value="UGX">🇺🇬 UGX — Ugandan Shilling</option>
+          <option value="ETB">🇪🇹 ETB — Ethiopian Birr</option>
+          <option value="XOF">🌍 XOF — CFA Franc West Africa</option>
+          <option value="XAF">🌍 XAF — CFA Franc Central Africa</option>
+          <option value="PEN">🇵🇪 PEN — Peruvian Sol</option>
+          <option value="CLP">🇨🇱 CLP — Chilean Peso</option>
+          <option value="COP">🇨🇴 COP — Colombian Peso</option>
+          <option value="ARS">🇦🇷 ARS — Argentine Peso</option>
+          <option value="VES">🇻🇪 VES — Venezuelan Bolívar</option>
+          <option value="UYU">🇺🇾 UYU — Uruguayan Peso</option>
+          <option value="PYG">🇵🇾 PYG — Paraguayan Guaraní</option>
+          <option value="BOB">🇧🇴 BOB — Bolivian Boliviano</option>
+          <option value="CRC">🇨🇷 CRC — Costa Rican Colón</option>
+          <option value="HNL">🇭🇳 HNL — Honduran Lempira</option>
+          <option value="GTQ">🇬🇹 GTQ — Guatemalan Quetzal</option>
+          <option value="DOP">🇩🇴 DOP — Dominican Peso</option>
+          <option value="JMD">🇯🇲 JMD — Jamaican Dollar</option>
+          <option value="TTD">🇹🇹 TTD — Trinidad and Tobago Dollar</option>
+          <option value="UAH">🇺🇦 UAH — Ukrainian Hryvnia</option>
+          <option value="RUB">🇷🇺 RUB — Russian Ruble</option>
+          <option value="KZT">🇰🇿 KZT — Kazakhstani Tenge</option>
+          <option value="UZS">🇺🇿 UZS — Uzbekistani Som</option>
+          <option value="GEL">🇬🇪 GEL — Georgian Lari</option>
+          <option value="AMD">🇦🇲 AMD — Armenian Dram</option>
+          <option value="AZN">🇦🇿 AZN — Azerbaijani Manat</option>
+          <option value="BYN">🇧🇾 BYN — Belarusian Ruble</option>
+          <option value="MDL">🇲🇩 MDL — Moldovan Leu</option>
+          <option value="RON">🇷🇴 RON — Romanian Leu</option>
+          <option value="BGN">🇧🇬 BGN — Bulgarian Lev</option>
+          <option value="HRK">🇭🇷 HRK — Croatian Kuna</option>
+          <option value="RSD">🇷🇸 RSD — Serbian Dinar</option>
+          <option value="MKD">🇲🇰 MKD — Macedonian Denar</option>
+          <option value="ALL">🇦🇱 ALL — Albanian Lek</option>
+          <option value="BAM">🇧🇦 BAM — Bosnian Mark</option>
+          <option value="ISK">🇮🇸 ISK — Icelandic Króna</option>
+          <option value="FJD">🇫🇯 FJD — Fijian Dollar</option>
+          <option value="PGK">🇵🇬 PGK — Papua New Guinea Kina</option>
+          <option value="SBD">🇸🇧 SBD — Solomon Islands Dollar</option>
+          <option value="TOP">🇹🇴 TOP — Tongan Paʻanga</option>
+          <option value="WST">🇼🇸 WST — Samoan Tālā</option>
+          <option value="VUV">🇻🇺 VUV — Vanuatu Vatu</option>
+        </select>
+      </div>
+      <div class="conv-mid" style="text-align:center;cursor:pointer" onclick="swapCurr()">⇄</div>
+      <div>
+        <label>To</label>
+        <select id="toCurr" onchange="convert()">
+          <option value="INR">🇮🇳 INR — Indian Rupee</option>
+          <option value="USD" selected>🇺🇸 USD — US Dollar</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+          <option value="AUD">🇦🇺 AUD — Australian Dollar</option>
+          <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+          <option value="AED">🇦🇪 AED — UAE Dirham</option>
+          <option value="CHF">🇨🇭 CHF — Swiss Franc</option>
+          <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+          <option value="MXN">🇲🇽 MXN — Mexican Peso</option>
+          <option value="BRL">🇧🇷 BRL — Brazilian Real</option>
+          <option value="KRW">🇰🇷 KRW — South Korean Won</option>
+          <option value="THB">🇹🇭 THB — Thai Baht</option>
+          <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
+          <option value="IDR">🇮🇩 IDR — Indonesian Rupiah</option>
+          <option value="PHP">🇵🇭 PHP — Philippine Peso</option>
+          <option value="SAR">🇸🇦 SAR — Saudi Riyal</option>
+          <option value="QAR">🇶🇦 QAR — Qatari Riyal</option>
+          <option value="ZAR">🇿🇦 ZAR — South African Rand</option>
+          <option value="TRY">🇹🇷 TRY — Turkish Lira</option>
+          <option value="NZD">🇳🇿 NZD — New Zealand Dollar</option>
+          <option value="SEK">🇸🇪 SEK — Swedish Krona</option>
+          <option value="NOK">🇳🇴 NOK — Norwegian Krone</option>
+          <option value="DKK">🇩🇰 DKK — Danish Krone</option>
+          <option value="PLN">🇵🇱 PLN — Polish Zloty</option>
+          <option value="HKD">🇭🇰 HKD — Hong Kong Dollar</option>
+          <option value="TWD">🇹🇼 TWD — Taiwan Dollar</option>
+          <option value="CZK">🇨🇿 CZK — Czech Koruna</option>
+          <option value="HUF">🇭🇺 HUF — Hungarian Forint</option>
+          <option value="PKR">🇵🇰 PKR — Pakistani Rupee</option>
+          <option value="BDT">🇧🇩 BDT — Bangladeshi Taka</option>
+          <option value="LKR">🇱🇰 LKR — Sri Lankan Rupee</option>
+          <option value="NPR">🇳🇵 NPR — Nepalese Rupee</option>
+          <option value="MMK">🇲🇲 MMK — Myanmar Kyat</option>
+          <option value="VND">🇻🇳 VND — Vietnamese Dong</option>
+          <option value="NGN">🇳🇬 NGN — Nigerian Naira</option>
+          <option value="KES">🇰🇪 KES — Kenyan Shilling</option>
+          <option value="EGP">🇪🇬 EGP — Egyptian Pound</option>
+          <option value="ILS">🇮🇱 ILS — Israeli Shekel</option>
+          <option value="KWD">🇰🇼 KWD — Kuwaiti Dinar</option>
+          <option value="BHD">🇧🇭 BHD — Bahraini Dinar</option>
+          <option value="OMR">🇴🇲 OMR — Omani Rial</option>
+          <option value="JOD">🇯🇴 JOD — Jordanian Dinar</option>
+          <option value="LBP">🇱🇧 LBP — Lebanese Pound</option>
+          <option value="MAD">🇲🇦 MAD — Moroccan Dirham</option>
+          <option value="DZD">🇩🇿 DZD — Algerian Dinar</option>
+          <option value="TND">🇹🇳 TND — Tunisian Dinar</option>
+          <option value="GHS">🇬🇭 GHS — Ghanaian Cedi</option>
+          <option value="TZS">🇹🇿 TZS — Tanzanian Shilling</option>
+          <option value="UGX">🇺🇬 UGX — Ugandan Shilling</option>
+          <option value="ETB">🇪🇹 ETB — Ethiopian Birr</option>
+          <option value="XOF">🌍 XOF — CFA Franc West Africa</option>
+          <option value="XAF">🌍 XAF — CFA Franc Central Africa</option>
+          <option value="PEN">🇵🇪 PEN — Peruvian Sol</option>
+          <option value="CLP">🇨🇱 CLP — Chilean Peso</option>
+          <option value="COP">🇨🇴 COP — Colombian Peso</option>
+          <option value="ARS">🇦🇷 ARS — Argentine Peso</option>
+          <option value="PYG">🇵🇾 PYG — Paraguayan Guaraní</option>
+          <option value="BOB">🇧🇴 BOB — Bolivian Boliviano</option>
+          <option value="CRC">🇨🇷 CRC — Costa Rican Colón</option>
+          <option value="UAH">🇺🇦 UAH — Ukrainian Hryvnia</option>
+          <option value="RUB">🇷🇺 RUB — Russian Ruble</option>
+          <option value="KZT">🇰🇿 KZT — Kazakhstani Tenge</option>
+          <option value="GEL">🇬🇪 GEL — Georgian Lari</option>
+          <option value="RON">🇷🇴 RON — Romanian Leu</option>
+          <option value="BGN">🇧🇬 BGN — Bulgarian Lev</option>
+          <option value="RSD">🇷🇸 RSD — Serbian Dinar</option>
+          <option value="ISK">🇮🇸 ISK — Icelandic Króna</option>
+          <option value="UYU">🇺🇾 UYU — Uruguayan Peso</option>
+          <option value="COP">🇨🇴 COP — Colombian Peso</option>
+          <option value="FJD">🇫🇯 FJD — Fijian Dollar</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Amount</label><input type="number" id="convAmount" value="1000" oninput="convert()"></div>
+    <div class="card-sm" style="margin-top:12px;text-align:center">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px" id="convLabel">INR → USD</div>
+      <div style="font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent3)" id="convResult">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px" id="convRate">Loading rates...</div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="sec-title">Quick Convert — Top 12 Currencies</div>
+      <div id="quickConvGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS / CATEGORIES -->
+<div class="page" id="page-settings">
+  <div class="card" style="margin-bottom:14px">
+    <div class="sec-title">Your Categories</div>
+    <div id="catList" style="margin-bottom:14px"></div>
+    <div class="divider"></div>
+    <div style="margin-top:14px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500">Add New Category</div>
+      <div class="grid2" style="gap:8px;margin-bottom:8px">
+        <div class="field"><label>Name</label><input type="text" id="newCatName" placeholder="e.g. Gym"></div>
+        <div class="field"><label>Color</label><input type="color" id="newCatColor" value="#7c6dfa" style="height:42px;padding:4px;cursor:pointer"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addCategory()">+ Add Category</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="sec-title">Export Data</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="exportJSON()">Export JSON</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <h2>Welcome to ETA</h2>
+    <div class="field"><label>Your Name</label><input type="text" id="nameInput" placeholder="Enter your name..." maxlength="30"></div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveUser()">Save & Continue</button>
+      <button class="btn btn-ghost" onclick="closeLogin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const RATES_TO_INR = {
+  INR:1,USD:83.5,EUR:90.2,GBP:105.8,JPY:.56,CAD:61.5,AUD:54.2,SGD:62.1,
+  AED:22.73,CHF:94.3,CNY:11.5,MXN:4.9,BRL:16.8,KRW:.063,THB:2.38,
+  MYR:17.9,IDR:.0053,PHP:1.49,SAR:22.25,QAR:22.93,ZAR:4.51,TRY:2.59,
+  NZD:50.1,SEK:8.02,NOK:7.95,DKK:12.1,PLN:21.0,HKD:10.7,TWD:2.6,
+  CZK:3.69,HUF:.24,PKR:.3,BDT:.76,LKR:.28,NPR:.63,MMK:.04,VND:.0033,
+  NGN:.056,KES:.65,EGP:1.71,ILS:22.3,KWD:271,BHD:221,OMR:217,JOD:118,
+  LBP:.00093,MAD:8.45,DZD:.62,TND:26.5,GHS:5.6,TZS:.032,UGX:.022,
+  ETB:1.51,XOF:.14,XAF:.14,PEN:22.3,CLP:.089,COP:.020,ARS:.099,
+  VES:.0023,UYU:2.1,PYG:.011,BOB:12.1,CRC:.16,HNL:3.38,GTQ:10.8,
+  DOP:1.44,JMD:.54,TTD:12.3,UAH:2.02,RUB:.92,KZT:.18,UZS:.0065,
+  GEL:30.6,AMD:.21,AZN:49.1,BYN:25.5,MDL:4.72,RON:18.2,BGN:46.1,
+  HRK:11.9,RSD:.77,MKD:1.46,ALL:.87,BAM:46.1,ISK:.62,FJD:37.5,
+  PGK:22.4,SBD:9.9,TOP:36.5,WST:30.5,VUV:.72,DOP:1.44
+};
+
+function convertCurrency(amount,from,to){
+  const inr=amount*RATES_TO_INR[from];
+  return inr/RATES_TO_INR[to];
+}
+
+let state={
+  user: localStorage.getItem('eta_user')||'',
+  expenses: JSON.parse(localStorage.getItem('eta_expenses')||'[]'),
+  categories: JSON.parse(localStorage.getItem('eta_categories')||JSON.stringify([
+    {name:'Food',color:'#fa6d9c'},{name:'Travel',color:'#6daaff'},
+    {name:'Shopping',color:'#fabc6d'},{name:'Entertainment',color:'#c86dfa'},
+    {name:'Health',color:'#6dfabc'},{name:'Bills',color:'#fa8c6d'},
+    {name:'Other',color:'#9990cc'}
+  ]))
+};
+
+function save(){
+  localStorage.setItem('eta_expenses',JSON.stringify(state.expenses));
+  localStorage.setItem('eta_categories',JSON.stringify(state.categories));
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['dashboard','expenses','calculator','converter','settings'][i]===id)});
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='converter')convert();
+  if(id==='dashboard')renderDashboard();
+  if(id==='expenses')renderExpenses();
+  if(id==='settings')renderCats();
+  if(id==='calculator')populateCalcCats();
+}
+
+function openLogin(){document.getElementById('loginModal').classList.add('open');if(state.user)document.getElementById('nameInput').value=state.user}
+function closeLogin(){document.getElementById('loginModal').classList.remove('open')}
+function saveUser(){
+  const n=document.getElementById('nameInput').value.trim();
+  if(!n)return;
+  state.user=n;
+  localStorage.setItem('eta_user',n);
+  document.getElementById('userName').textContent=n;
+  document.getElementById('userDot').style.background='var(--accent3)';
+  closeLogin();
+}
+
+function populateCatSelects(){
+  const selects=['addCategory','filterCat','calcCatAdd'];
+  selects.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const isFilter=id==='filterCat';
+    el.innerHTML=(isFilter?'<option value="">All categories</option>':'')+
+      state.categories.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+  });
+}
+
+function addExpense(){
+  const amt=parseFloat(document.getElementById('addAmount').value);
+  const cat=document.getElementById('addCategory').value;
+  const date=document.getElementById('addDate').value;
+  const note=document.getElementById('addNote').value.trim();
+  if(!amt||amt<=0||!date){alert('Enter a valid amount and date.');return;}
+  state.expenses.push({id:Date.now(),amount:amt,category:cat,date,note});
+  save();
+  document.getElementById('addAmount').value='';
+  document.getElementById('addNote').value='';
+  renderDashboard();
+}
+
+function deleteExpense(id){
+  state.expenses=state.expenses.filter(e=>e.id!==id);
+  save();renderDashboard();renderExpenses();
+}
+
+function renderExpenses(){
+  const list=document.getElementById('expenseList');
+  const search=(document.getElementById('searchInput').value||'').toLowerCase();
+  const filterCat=document.getElementById('filterCat').value;
+  let filtered=state.expenses.filter(e=>{
+    if(filterCat&&e.category!==filterCat)return false;
+    if(search&&!e.category.toLowerCase().includes(search)&&!e.amount.toString().includes(search)&&!e.date.includes(search)&&!(e.note||'').toLowerCase().includes(search))return false;
+    return true;
+  }).slice().reverse();
+  if(!filtered.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div>No expenses found</div></div>`;return;}
+  list.innerHTML=filtered.map(e=>{
+    const cat=state.categories.find(c=>c.name===e.category)||{color:'#9990cc'};
+    return `<div class="expense-item">
+      <div class="cat-dot" style="background:${cat.color}"></div>
+      <div class="exp-info">
+        <div class="exp-cat">${e.category}${e.note?` <span style="color:var(--text3);font-size:11px">— ${e.note}</span>`:''}</div>
+        <div class="exp-date">${e.date}</div>
+      </div>
+      <div class="exp-amt">₹${e.amount.toLocaleString()}</div>
+      <div class="exp-actions">
+        <button class="icon-btn" title="Delete" onclick="deleteExpense(${e.id})" style="color:var(--danger)">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let pieChartInstance=null;
+function renderDashboard(){
+  populateCatSelects();
+  const total=state.expenses.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('dash-total').textContent='₹'+total.toLocaleString();
+  document.getElementById('dash-count').textContent=state.expenses.length;
+  const avg=state.expenses.length?total/state.expenses.length:0;
+  const predict=Math.round(avg*30);
+  document.getElementById('dash-predict').textContent='₹'+predict.toLocaleString();
+  
+  const catTotals={};
+  state.expenses.forEach(e=>{catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});
+  
+  drawPie(catTotals);
+  renderPersonality(catTotals,total);
+}
+
+function drawPie(catTotals){
+  const canvas=document.getElementById('pieChart');
+  if(!canvas)return;
+  const keys=Object.keys(catTotals);
+  if(!keys.length){if(pieChartInstance){pieChartInstance.destroy();pieChartInstance=null;}return;}
+  const colors=keys.map(k=>{const c=state.categories.find(x=>x.name===k);return c?c.color:'#9990cc';});
+  if(pieChartInstance)pieChartInstance.destroy();
+  pieChartInstance=new Chart(canvas.getContext('2d'),{
+    type:'doughnut',
+    data:{labels:keys,datasets:[{data:keys.map(k=>catTotals[k]),backgroundColor:colors,borderWidth:2,borderColor:'#12121a'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9990cc',font:{family:'Space Grotesk',size:12}}}}}
+  });
+}
+
+function renderPersonality(catTotals,total){
+  if(!total){
+    document.getElementById('pEmoji').textContent='🤔';
+    document.getElementById('pTitle').textContent='No data yet';
+    document.getElementById('pSub').textContent='Add expenses to reveal your money personality';
+    document.getElementById('pBadges').innerHTML='';
+    return;
+  }
+  const food=catTotals['Food']||0;
+  const travel=catTotals['Travel']||0;
+  const shopping=catTotals['Shopping']||0;
+  const health=catTotals['Health']||0;
+  const ent=catTotals['Entertainment']||0;
+
+  let emoji,title,sub;
+  if(total>20000){emoji='🔥';title='Big Spender';sub='You live life to the fullest — just watch that wallet!';}
+  else if(total>10000){emoji='😬';title='Overspender';sub='A little over budget. Time to rein it in.';}
+  else if(total>5000){emoji='👍';title='Balanced Spender';sub='You\'re walking the middle path pretty well.';}
+  else if(total>2000){emoji='😊';title='Mindful Spender';sub='Good control! You know where every rupee goes.';}
+  else{emoji='💰';title='Super Saver';sub='Impressive frugality! You barely spend at all.';}
+
+  const badges=[];
+  if(food/total>.4)badges.push({label:'Food Lover',color:'#fa6d9c'});
+  if(food/total<.1&&food>0)badges.push({label:'Meal Skipper',color:'#fabc6d'});
+  if(travel/total>.3)badges.push({label:'Wanderer',color:'#6daaff'});
+  if(shopping/total>.3)badges.push({label:'Shopaholic',color:'#fabc6d'});
+  if(health/total>.2)badges.push({label:'Health First',color:'#6dfabc'});
+  if(ent/total>.25)badges.push({label:'Fun Seeker',color:'#c86dfa'});
+
+  const topCat=Object.entries(catTotals).sort((a,b)=>b[1]-a[1])[0];
+  if(topCat)badges.push({label:`Top: ${topCat[0]}`,color:state.categories.find(c=>c.name===topCat[0])?.color||'#9990cc'});
+
+  document.getElementById('pEmoji').textContent=emoji;
+  document.getElementById('pTitle').textContent=title;
+  document.getElementById('pSub').textContent=sub;
+  document.getElementById('pBadges').innerHTML=badges.map(b=>`<span class="pill" style="background:${b.color}22;color:${b.color};border:1px solid ${b.color}55">${b.label}</span>`).join('');
+}
+
+async function getAIInsight(){
+  if(!state.expenses.length){alert('Add some expenses first!');return;}
+  const btn=document.querySelector('button[onclick="getAIInsight()"]');
+  btn.disabled=true;btn.textContent='Analyzing...';
+  const out=document.getElementById('aiOutput');
+  out.style.display='block';
+  out.innerHTML='<span class="loading-dots">Thinking</span>';
+
+  const catTotals={};
+  state.expenses.forEach(e=>{catTotals[e.category]=(catTotals[e.category]||0)+e.amount;});
+  const total=state.expenses.reduce((s,e)=>s+e.amount,0);
+  const avg=total/state.expenses.length;
+  const prompt=`I am an expense tracker user. Here is my spending data:\n- Total spent: ₹${total.toFixed(0)}\n- Number of entries: ${state.expenses.length}\n- Avg per entry: ₹${avg.toFixed(0)}\n- By category: ${JSON.stringify(catTotals)}\n\nBased on this, give me:\n1. My money personality in 1 sentence\n2. My predicted next month's spend\n3. Top 2 specific actionable saving tips\n4. One encouragement\n\nKeep it friendly, concise, and use INR (₹). Max 120 words.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.map(i=>i.text||'').join('')||'Could not get AI insight.';
+    out.textContent=text;
+  }catch(e){out.textContent='AI insight unavailable right now. Check your connection!';}
+  btn.disabled=false;btn.textContent='✨ Analyze my spending (AI)';
+}
+
+// CALCULATOR
+let calcExpr='',calcVal='0',calcHasResult=false;
+function buildCalc(){
+  const btns=[
+    ['C','clr'],['±','op'],['%','op'],['÷','op'],
+    ['7',''],[  '8',''],[  '9',''],[  '×','op'],
+    ['4',''],[  '5',''],[  '6',''],[  '−','op'],
+    ['1',''],[  '2',''],[  '3',''],[  '+','op'],
+    ['0','wide'],['.',''],[  '=','eq']
+  ];
+  const grid=document.getElementById('calcGrid');
+  grid.innerHTML='';
+  btns.forEach(([label,cls])=>{
+    const b=document.createElement('button');
+    b.className='calc-btn'+( cls?' '+cls:'');
+    b.textContent=label;
+    if(cls==='wide')b.style.gridColumn='span 2';
+    b.onclick=()=>handleCalc(label);
+    grid.appendChild(b);
+  });
+}
+function handleCalc(k){
+  const disp=document.getElementById('calcDisplay');
+  const expr=document.getElementById('calcExpr');
+  if(k==='C'){calcExpr='';calcVal='0';calcHasResult=false;}
+  else if(k==='='){
+    try{
+      const raw=calcExpr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+      expr.textContent=calcExpr+' =';
+      calcVal=String(eval(raw));
+      calcExpr='';calcHasResult=true;
+    }catch{calcVal='Error';}
+  }else if(['÷','×','−','+'].includes(k)){
+    if(calcHasResult){calcExpr=calcVal+k;calcHasResult=false;}
+    else calcExpr+=k;
+    calcVal='0';
+  }else if(k==='%'){
+    try{calcVal=String(parseFloat(calcVal)/100);calcExpr='';}catch{}
+  }else if(k==='±'){
+    try{calcVal=String(-parseFloat(calcVal));}catch{}
+  }else{
+    if(calcHasResult){calcExpr='';calcHasResult=false;}
+    if(calcVal==='0'&&k!=='.')calcVal=k;
+    else calcVal+=k;
+    calcExpr+=k;
+  }
+  disp.textContent=parseFloat(calcVal)||calcVal||'0';
+  if(!['='].includes(k))expr.textContent=calcExpr;
+}
+function addCalcAsExpense(){
+  const val=parseFloat(document.getElementById('calcDisplay').textContent);
+  const cat=document.getElementById('calcCatAdd').value;
+  if(!val||val<=0){alert('Calculate a positive value first.');return;}
+  const today=new Date().toISOString().split('T')[0];
+  state.expenses.push({id:Date.now(),amount:val,category:cat,date:today,note:'From Calculator'});
+  save();alert(`₹${val} added as ${cat} expense!`);renderDashboard();
+}
+function populateCalcCats(){
+  const el=document.getElementById('calcCatAdd');if(!el)return;
+  el.innerHTML=state.categories.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+}
+
+// CONVERTER
+function convert(){
+  const from=document.getElementById('fromCurr').value;
+  const to=document.getElementById('toCurr').value;
+  const amt=parseFloat(document.getElementById('convAmount').value)||0;
+  const result=convertCurrency(amt,from,to);
+  const rate=convertCurrency(1,from,to);
+  document.getElementById('convResult').textContent=result.toLocaleString(undefined,{maximumFractionDigits:4});
+  document.getElementById('convLabel').textContent=`${from} → ${to}`;
+  document.getElementById('convRate').textContent=`1 ${from} = ${rate.toFixed(4)} ${to}`;
+  renderQuickConv(amt,from);
+}
+function swapCurr(){
+  const f=document.getElementById('fromCurr');
+  const t=document.getElementById('toCurr');
+  const tmp=f.value;f.value=t.value;t.value=tmp;convert();
+}
+function renderQuickConv(amt,from){
+  const top12=['USD','EUR','GBP','JPY','CAD','AUD','SGD','AED','CHF','CNY','MXN','BRL'];
+  const grid=document.getElementById('quickConvGrid');
+  grid.innerHTML=top12.filter(c=>c!==from).slice(0,12).map(c=>{
+    const val=convertCurrency(amt,from,c);
+    return `<div class="card-sm" style="text-align:center">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:2px">${c}</div>
+      <div style="font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent)">${val.toLocaleString(undefined,{maximumFractionDigits:2})}</div>
+    </div>`;
+  }).join('');
+}
+
+// CATEGORIES
+function renderCats(){
+  document.getElementById('catList').innerHTML=state.categories.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #ffffff08">
+      <div style="width:16px;height:16px;border-radius:50%;background:${c.color};flex-shrink:0"></div>
+      <span style="flex:1;font-size:14px">${c.name}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory(${i})">Remove</button>
+    </div>
+  `).join('');
+}
+function addCategory(){
+  const name=document.getElementById('newCatName').value.trim();
+  const color=document.getElementById('newCatColor').value;
+  if(!name)return;
+  if(state.categories.find(c=>c.name.toLowerCase()===name.toLowerCase())){alert('Category already exists.');return;}
+  state.categories.push({name,color});
+  document.getElementById('newCatName').value='';
+  save();renderCats();populateCatSelects();
+}
+function deleteCategory(i){
+  if(state.categories.length<=1){alert('Need at least one category.');return;}
+  state.categories.splice(i,1);save();renderCats();populateCatSelects();
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify({user:state.user,expenses:state.expenses,categories:state.categories},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='eta_data.json';a.click();
+}
+function exportCSV(){
+  const rows=[['Date','Category','Amount','Note'],...state.expenses.map(e=>[e.date,e.category,e.amount,e.note||''])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='eta_expenses.csv';a.click();
+}
+
+// INIT
+(function init(){
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('addDate').value=today;
+  if(state.user){
+    document.getElementById('userName').textContent=state.user;
+    document.getElementById('userDot').style.background='var(--accent3)';
+  }else{
+    setTimeout(openLogin,600);
+  }
+  populateCatSelects();
+  buildCalc();
+  renderDashboard();
+  convert();
+})();
+</script>
